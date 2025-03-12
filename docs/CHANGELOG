@@ -1,3 +1,103 @@
+2025-03-12      3.7:
+--------------------
+  * bugfixes:
+    - #6662 [component: bokehjs] Legend click policy on touchscreens
+    - #9663 [component: bokehjs] [BUG] data value tooltip incorrect on figure.image with log scale
+    - #10976 [component: bokehjs] Wrong data shape for a glyph results in an exception
+    - #11434 [component: bokehjs] DataTable with 100K rows hangs on select operations
+    - #11594 [component: bokehjs] HTML annotations bound to a frame don't support clipping
+    - #13076 [component: bokehjs] [BUG] Bytes property comparisons not implemented
+    - #13119 [component: bokehjs] [BUG] Server CDS update with slider performance degraded
+    - #13566 [component: bokehjs] [BUG] Legend outside plot area won’t resize
+    - #13885 [component: bokehjs] [BUG] Tooltips not shown when plot is in fullscreen
+    - #14120 [component: bokehjs] DOM models don't allow updating
+    - #14134 [component: bokehjs] WebKit bugs associated with dual DOM/canvas rendering feature
+    - #14183 [component: bokehjs] [BUG] Dialog widget multiple show/hide broken
+    - #14207 [component: bokehjs] [BUG] Toggling widget visibility triggers zoom in for unrelated figure
+    - #14246 [component: bokehjs] [BUG] Toggling tool visibility has no effect.
+    - #14265 [component: bokehjs] Bad legend glyph rendering in standalone SVG
+    - #14280 [component: bokehjs] Unintialized figure range triggers JS error when adding a tile
+    - #14283 mypy 1.15 breaks `type[Literal[...]]` usage in enums
+    - #14285 [component: docs] Links to population server example are not correct
+    - #14296 Patching failing due to Numpy 2.0 changes
+    - #14297 [component: examples] Spectrogram app example is broken
+    - #14300 [component: examples] Surface3d example is broken
+    - #14304 [component: examples] Stocks example is broken
+    - #14310 Fill and hatch properties are applied inconsistently
+    - #14328 [component: examples] Blank tooltips at bokehjs/examples/hover
+    - #14339 [component: bokehjs] SpatialIndex.bounds is broken
+    - #14342 `mypy` fails due to upgraded narwhals type declarations
+    - #14360 [component: examples] plots in tile_demo are not linked (even when the description states so)
+    - #14389 `Model` type declaration is invalid
+    - #14102 [component: tests] Fixed extended equality definition in defaults' tests
+
+  * features:
+    - #5497 [component: bokehjs] Group hover tool toolbar icons
+    - #6556 Add a progress bar to bokeh widgets list
+    - #10020 [component: bokehjs] Windowed Auto-ranging
+    - #11082 [component: bokehjs] Auto-ranging for wedges (and single circles?)
+    - #13027 [component: bokehjs] [FEATURE] RangeTool: Use different cursor icons for changing the range vs. dragging the range
+    - #13186 [FEATURE] datetime formatting: enhance default formatting
+    - #13773 Add support toggleable `CustomAction` tool buttons
+    - #13780 [FEATURE] Use Narwhals to support more dataframe types as input
+    - #14030 [component: bokehjs] [FEATURE] Box zoom tool - enable dynamic dimensions zooming
+    - #14122 Allow `CrosshairTool` to work on axes
+    - #14123 [component: bokehjs] `ValueOf(model, attr)` needs a configurable formatter
+    - #14184 [component: bokehjs] [FEATURE] Display Bokeh version as a tooltip on the Bokeh logo
+    - #14225 Allow to access tools via a context menu regardless of toolbar visibility
+    - #14230 Add `element_id` or `html_id` property to `UIElement` and related models
+    - #14254 Add support for static types to glyph methods in figure' API
+    - #14288 Add support for static typing to `figure()`
+    - #14292 Add label and on/off icon to `Switch` widget
+    - #14375 Use `Image` property type in `ImageURLTexture.url`
+    - #14384 [component: bokehjs] Add support for auto-activation of `WheelZoomTool` when plot is focused
+    - #14081 Add support for `Drawer` UI component
+    - #14106 Improve `PanTool`'s cursor and state handling
+    - #14133 [component: bokehjs] Repaint when viewport scale/pixel ratio changes
+    - #14165 Add support for custom scatter markers
+
+  * tasks:
+    - #13095 [BUG] TypeError with row and file_html
+    - #13292 Allow to statically type models and properties in bokeh
+    - #13779 [component: examples] [DOCUMENTATION]  Boxplot example wrongly computes whiskers
+    - #13817 [BUG] Cannot `micropip.install("bokeh>=3.4.0")`
+    - #13899 Make Circle.radius non-optional
+    - #14083 [component: bokehjs] [BUG] Build fails in TypeScript 5.7-dev (nightly)
+    - #14215 [FEATURE] Install instructions and CoC link update
+    - #14244 CI workflows complain about conda's channel configuration
+    - #14249 Replace `[FEATURE] ` prefix with `type: feature` label in issue template
+    - #14276 Address late review of PR #14228
+    - #14316 Add `Any` to `args` and `kwargs` in explicit `__init__` to support Init signatures
+    - #14319 Upgrade `ubuntu-20.04` to `ubuntu-24.04` in CI
+    - #14331 [component: docs] Simplify the legend example
+    - #14351 Bokeh 3.7 type hinting does not work for Python 3.10 and Python 3.11
+    - #14367 [component: docs] Improved docstrings for LOD options
+    - #14372 [component: build] Upgrade to TypeScript 5.8
+    - #14386 [component: tests] Fail tests if baseline name contains problematic characters
+    - #14053 Upgrade Ubuntu on GitHub actions to 24.04
+    - #14094 [component: build] Rename `scripts:watch` task to `watch`
+    - #14103 [component: tests] Re-run unit tests with `--last-failed` in CI
+    - #14105 [component: tests] Add a workflow to test Chromium versions on demand
+    - #14113 [component: bokehjs] Fix syntax in `bokehjs-test-chromium.yml` workflow
+    - #14115 [component: bokehjs] More syntax fixes in `bokehjs-test-chromium.yml`
+    - #14116 [component: bokehjs] More fixes to `bokehjs-test-chromium.yml`
+    - #14118 Lock closed issues/prs
+    - #14125 [component: bokehjs] Temporarily disable bokehjs tests in CI on Windows and OSX
+    - #14127 Add `process-only` to avoid failing `lock-threads` workflow
+    - #14131 [component: tests] Improvements to bokehjs' tests framework
+    - #14147 Run lock threads workflow once a week
+    - #14167 [component: build] Upgrade to TypeScript 5.7
+    - #14176 Fix spelling across the repository
+    - #14209 [component: tests] Add `BOKEH_CHROME` environment variable for BokehJS test
+    - #14219 [component: tests] Add test to capture effect of setting max-height to 100%
+    - #14233 Improve typing in `plotting._renderer`
+    - #14234 Don't apply `min_width`/`min_height` unnecessarily
+    - #14239 [component: tests] Add Google Chrome for Testing to list of Chrome executable names
+    - #14240 [component: docs] Build docs without GOOGLE_API_KEY if BOKEH_DOCS_CDN=local
+    - #14290 Forward ports docs 3.7
+    - #14408 Update `switcher.json` for 3.7.0 release
+    - #14409 Update `switcher.json` for 3.7.0 release
+
 2024-09-26      3.6:
 --------------------
   * bugfixes:
