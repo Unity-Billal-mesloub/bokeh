@@ -2,7 +2,7 @@ import {default_resolver} from "../base"
 import {version as js_version} from "../version"
 import {logger} from "../core/logging"
 import type {Class} from "core/class"
-import type {HasProps} from "core/has_props"
+import {HasProps} from "core/has_props"
 import type {Property} from "core/properties"
 import {ModelResolver} from "core/resolvers"
 import type {ModelRep} from "core/serialization"
@@ -78,6 +78,12 @@ export const documents: Document[] = []
 
 export const DEFAULT_TITLE = "Bokeh Application"
 
+export type DocumentOptions = {
+  roots?: Iterable<HasProps>
+  resolver?: ModelResolver
+  recompute_timeout?: number
+}
+
 // This class should match the API of the Python Document class
 // as much as possible.
 export class Document implements Equatable {
@@ -101,8 +107,9 @@ export class Document implements Equatable {
   protected _interactive_timestamp: number | null
   protected _interactive_plot: Model | null
   protected _interactive_finalize: (() => void) | null
+  protected _recompute_timeout: number
 
-  constructor(options: {roots?: Iterable<HasProps>, resolver?: ModelResolver} = {}) {
+  constructor(options: DocumentOptions = {}) {
     documents.push(this)
     this._init_timestamp = Date.now()
     this._resolver = options.resolver ?? new ModelResolver(default_resolver)
@@ -119,6 +126,7 @@ export class Document implements Equatable {
     this._idle_roots = new WeakSet()
     this._interactive_timestamp = null
     this._interactive_plot = null
+    this._recompute_timeout = options.recompute_timeout ?? 30_000 /* 30s */
     if (options.roots != null) {
       this._add_roots(...options.roots)
     }
@@ -242,15 +250,30 @@ export class Document implements Equatable {
     }
   }
 
-  /*protected*/ _invalidate_all_models(): void {
-    logger.debug("invalidating document models")
-    // if freeze count is > 0, we'll recompute on unfreeze
-    if (this._all_models_freeze_count === 0) {
+  protected _recompute_timer: number | null = null
+
+  protected _cancel_recompute_all_models(): void {
+    if (this._recompute_timer != null) {
+      clearTimeout(this._recompute_timer)
+      this._recompute_timer = null
+    }
+  }
+
+  protected _schedule_recompute_all_models(): void {
+    const timeout = this._recompute_timeout
+    if (isNaN(timeout) || timeout <= 0) {
       this._recompute_all_models()
+    } else if (isFinite(timeout)) {
+      this._cancel_recompute_all_models()
+      this._recompute_timer = setTimeout(() => {
+        this._recompute_all_models()
+      }, timeout)
     }
   }
 
   protected _recompute_all_models(): void {
+    this._cancel_recompute_all_models()
+
     let new_all_models_set = new Set<HasProps>()
     for (const r of this._roots) {
       new_all_models_set = sets.union(new_all_models_set, r.references())
@@ -269,7 +292,20 @@ export class Document implements Equatable {
       model.attach_document(this)
       this._new_models.add(model)
     }
-    this._all_models = recomputed as any // XXX
+    this._all_models = recomputed
+  }
+
+  partially_update_all_models(value: unknown): void {
+    const refs = new Set<HasProps>()
+    HasProps._value_record_references(value, refs, {recursive: false})
+    for (const ref of refs) {
+      if (!this._all_models.has(ref.id)) {
+        ref.attach_document(this)
+        this._new_models.add(ref)
+        this._all_models.set(ref.id, ref)
+      }
+    }
+    this._schedule_recompute_all_models()
   }
 
   roots(): HasProps[] {
@@ -545,8 +581,17 @@ export class Document implements Equatable {
   }
 
   apply_json_patch(patch: Patch, buffers: Map<ID, ArrayBuffer> = new Map()): void {
-    this._hold_models_freeze = true // try ... finally
+    const {_hold_models_freeze} = this
+    this._hold_models_freeze = true
+    try {
+      this._apply_json_patch(patch, buffers)
+    } finally {
+      this._hold_models_freeze = _hold_models_freeze
+    }
+    this._schedule_recompute_all_models()
+  }
 
+  protected _apply_json_patch(patch: Patch, buffers: Map<ID, ArrayBuffer> = new Map()): void {
     const finalize = (obj: HasProps) => {
       obj.attach_document(this)
       this._new_models.add(obj)
@@ -610,7 +655,5 @@ export class Document implements Equatable {
         }
       }
     }
-
-    this._hold_models_freeze = false
   }
 }
