@@ -138,10 +138,11 @@ export abstract class DOMComponentView extends DOMElementView {
     this.shadow_el = this.el.attachShadow({mode: "open"})
   }
 
-  readonly _css_vars = new InlineStyleSheet()
+  readonly _base_style = new InlineStyleSheet(base_css, "base")
+  readonly _css_vars = new InlineStyleSheet("", "vars")
 
   override stylesheets(): StyleSheetLike[] {
-    return [...super.stylesheets(), base_css, this._css_vars]
+    return [...super.stylesheets(), this._base_style]
   }
 
   /**
@@ -155,7 +156,7 @@ export abstract class DOMComponentView extends DOMElementView {
    * Stylesheets computed by the component.
    */
   computed_stylesheets(): InlineStyleSheet[] {
-    return []
+    return [this._css_vars]
   }
 
   /**
@@ -171,7 +172,9 @@ export abstract class DOMComponentView extends DOMElementView {
     this._applied_css_classes = []
     this._applied_stylesheets = []
     for (const stylesheet of this.computed_stylesheets()) {
-      stylesheet.clear()
+      if (!stylesheet.persistent) {
+        stylesheet.clear()
+      }
     }
   }
 
@@ -234,6 +237,10 @@ export abstract class DOMComponentView extends DOMElementView {
       const full_name = name.startsWith("--") ? name : `--${name}`
       vars.push(`${full_name}: ${value};\n`)
     }
-    this._css_vars.replace(`:host {\n${vars}}`)
+    if (vars.length == 0) {
+      this._css_vars.clear()
+    } else {
+      this._css_vars.replace(`:host {\n${vars}}`)
+    }
   }
 }

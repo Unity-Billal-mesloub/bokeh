@@ -101,7 +101,7 @@ export class PlotView extends LayoutDOMView implements Paintable {
 
   readonly repainted = new Signal0(this, "repainted")
 
-  protected readonly _computed_style = new InlineStyleSheet()
+  protected readonly _computed_style = new InlineStyleSheet("", "computed")
 
   override stylesheets(): StyleSheetLike[] {
     return [...super.stylesheets(), plots_css.default, this._computed_style]
@@ -1022,7 +1022,7 @@ export class PlotView extends LayoutDOMView implements Paintable {
     const right_width = bbox.width - right.left
 
     // TODO: don't replace here; inject stylesheet?
-    this.canvas.style.replace(`
+    this.canvas.parent_style.replace(`
       .bk-layer.bk-events {
         display: grid;
         grid-template-areas:
