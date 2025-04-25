@@ -1,74 +1,49 @@
 <div id="codepen-html">
-
-
 <!--
-{% include 'bokehjs_html_template.html' %}
+{%- include 'bokehjs_html_template.html' %}
 -->
 </div>
 {% for css_file in css_files %}
 <link rel="stylesheet" href="{{css_file}}" type="text/css" />{% endfor %}
 {% for js_file in js_files %}
 <script type="text/javascript" src="{{js_file}}"></script>{% endfor %}
-
 <script>
-    (function () {
+  document.addEventListener("DOMContentLoaded", () => {
+    let HTML = ""
+    const html_el = document.getElementById("codepen-html")
+    for (const child_el of html_el.childNodes) {
+      if (child_el.nodeType === Node.COMMENT_NODE) {
+        // remove first line break to avoid an empty line in the html section of code pen
+        HTML = child_el.textContent.replace(/\n/, "")
+      }
+    }
+    document.querySelectorAll(".codepen-wrap").forEach((el) => {
+      let form = el.querySelector("form")
+      // do nothing if no form tag exists
+      if (form === null) { return; }
 
-        // this monkey patches Plotting.show to insert the plot below
-        // the script block
-
-        const originalPltShow = Bokeh.Plotting.show;
-        const newPlotShow = function(layoutDomObj, target) {
-            if(typeof target === "undefined"){
-                target = document.currentScript.parentElement;
-            }
-            return originalPltShow(layoutDomObj, target);
-        };
-        Bokeh.Plotting.show = newPlotShow;
-    })()
-    $(function() {
-
-
-        let HTML = "";
-        const htmlEl = document.getElementById("codepen-html");
-        for(let i=0; i < htmlEl.childNodes.length; i++){
-            //nodeType == 8 is the special number for comment nodes
-            if(htmlEl.childNodes[i].nodeType == 8){
-                HTML = htmlEl.childNodes[i].textContent;
-            }
-        }
-        $(".codepen-wrap ").each(function(iterEl) {
-                const el = $(this),
-                        codeInside = el.find('.codepen-content')[0].innerText,
-                        CSS = "",
-                        JS = codeInside;
-
-                const data = {
-                  title              : el.attr('data-codepen-title'),
-                  description        : "",
-                  html               : HTML,
-                  html_pre_processor : "none",
-                  css                : CSS,
-                  css_pre_processor  : "none",
-                  css_starter        : "neither",
-                  css_prefix_free    : false,
-                  js                 : JS,
-                  js_pre_processor   : "none",
-                  js_modernizr       : false,
-                  js_library         : "",
-                  html_classes       : "",
-                  css_external       : "",
-                  js_external        : "",
-                  template           : true
-                };
-                const JSONstring =
-                  JSON.stringify(data)
-                  // Quotes will screw up the JSON
-                  .replace(/"/g, "&quot;")
-                  .replace(/'/g, "&apos;");
-                const jsonInput ='<input type="hidden" name="data" value=\'' +
-                          JSONstring + '\'>';
-                el.find('form').append(jsonInput);
-          });
-        });
-
+      const data = {
+        title: el.getAttribute("data-codepen-title"),
+        description: "",
+        html: HTML,
+        html_pre_processor: "none",
+        css: "",
+        css_pre_processor: "none",
+        css_starter: "neither",
+        css_prefix_free: false,
+        js: el.querySelector(".codepen-content").innerText,
+        js_pre_processor: "none",
+        js_modernizr: false,
+        js_library: "",
+        html_classes: "",
+        css_external: "",
+        js_external: "",
+        template: true,
+      }
+      // Quotes will screw up the JSON
+      const json_string = JSON.stringify(data).replace(/"/g, "&quot;").replace(/'/g, "&apos;")
+      const json_input = `<input type="hidden" name="data" value="${json_string}">`
+      form.innerHTML += json_input
+    })
+  })
 </script>
