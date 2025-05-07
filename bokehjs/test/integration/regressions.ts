@@ -4466,4 +4466,87 @@ describe("Bug", () => {
       expect(reversed(pre_update)).to.be.equal(post_update)
     })
   })
+
+  describe("in issue #14451", () => {
+    describe("doesn't allow to correctly position Legend annotation in side panel", () => {
+      function make(location: Location, options?: {multiple: boolean}) {
+        const x = np.linspace(0, 4*np.pi, 50)
+        const y = np.sin(x)
+
+        const p = figure({frame_width: 250, frame_height: 250, toolbar_location: location})
+
+        const r0 = p.scatter(x, y)
+        const r1 = p.line(x, y)
+
+        const r2 = p.line(x, f`2*${y}`, {line_dash: [4, 4], line_color: "orange", line_width: 2})
+
+        const r3 = p.scatter(x, f`3*${y}`, {marker: "square", fill_color: null, line_color: "green"})
+        const r4 = p.line(x, f`3*${y}`, {line_color: "green"})
+
+        const legend = new Legend({
+          items: [
+            new LegendItem({label: "sin(x)",   renderers: [r0, r1]}),
+            new LegendItem({label: "2*sin(x)", renderers: [r2]}),
+            new LegendItem({label: "3*sin(x)", renderers: [r3, r4]}),
+          ],
+          location: "center",
+          margin: 0,
+          click_policy: "mute",
+        })
+        p.add_layout(legend, location)
+
+        if (options?.multiple ?? false) {
+          const legend = new Legend({
+            items: [
+              new LegendItem({label: "sin(x)", renderers: [r0, r1]}),
+            ],
+            location: "center",
+            margin: 0,
+            click_policy: "mute",
+          })
+          p.add_layout(legend, location)
+        }
+
+        return p
+      }
+      it("above", async () => {
+        await display(make("above"), [350, 450])
+      })
+      it("below", async () => {
+        await display(make("below"), [350, 450])
+      })
+      it("left", async () => {
+        await display(make("left"), [450, 300])
+      })
+      it("right", async () => {
+        await display(make("right"), [450, 300])
+      })
+
+      it("above with multiple legends", async () => {
+        await display(make("above", {multiple: true}), [350, 500])
+      })
+      it("below with multiple legends", async () => {
+        await display(make("below", {multiple: true}), [350, 500])
+      })
+      it("left with multiple legends", async () => {
+        await display(make("left", {multiple: true}), [500, 300])
+      })
+      it("right with multiple legends", async () => {
+        await display(make("right", {multiple: true}), [500, 300])
+      })
+    })
+
+    it("doesn't allow to keep toolbar visible if renderers change", async () => {
+      const p = fig([200, 200], {toolbar_location: "right"})
+      p.scatter([1, 2, 3], [1, 2, 3], {color: "red"})
+
+      const {view} = await display(p)
+
+      p.scatter([1, 2, 3], [2, 3, 4], {color: "blue"})
+      await view.ready
+
+      p.scatter([1, 2, 3], [3, 4, 5], {color: "green"})
+      await view.ready
+    })
+  })
 })
