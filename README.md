@@ -25,7 +25,7 @@
   </td>
 
   <td>
-    <a href="https://github.com/bokeh/bokeh/blob/main/LICENSE.txt">
+    <a href="https://github.com/Unity-Billal-mesloub/bokeh/blob/main/LICENSE.txt">
     <img src="https://img.shields.io/github/license/bokeh/bokeh.svg?color=ECD078&style=for-the-badge"
          alt="Bokeh license (BSD 3-clause)" />
     </a>
@@ -76,14 +76,14 @@
   <td>Build</td>
 
   <td>
-    <a href="https://github.com/bokeh/bokeh/actions">
+    <a href="https://github.com/Unity-Billal-mesloub/bokeh/actions">
     <img src="https://img.shields.io/github/workflow/status/bokeh/bokeh/Bokeh-CI/branch-3.0?label=Bokeh-CI&logo=github&style=for-the-badge"
          alt="Current Bokeh-CI github actions build status" />
     </a>
   </td>
 
   <td>
-    <a href="https://github.com/bokeh/bokeh/actions">
+    <a href="https://github.com/Unity-Billal-mesloub/bokeh/actions">
     <img src="https://img.shields.io/github/workflow/status/bokeh/bokeh/BokehJS-CI/branch-3.0?label=BokehJS-CI&logo=github&style=for-the-badge"
          alt="Current BokehJS-CI github actions build status" />
     </a>
@@ -157,7 +157,7 @@ Community support is available on the [Project Discourse](https://discourse.boke
 
 If you would like to contribute to Bokeh, please review the [Contributor Guide](https://docs.bokeh.org/en/latest/docs/dev_guide.html) and [request an invitation to the Bokeh Dev Slack workspace](https://slack-invite.bokeh.org/).
 
-*Note: Everyone who engages in the Bokeh project's discussion forums, codebases, and issue trackers is expected to follow the [Code of Conduct](https://github.com/bokeh/bokeh/blob/branch-3.0/docs/CODE_OF_CONDUCT.md).*
+*Note: Everyone who engages in the Bokeh project's discussion forums, codebases, and issue trackers is expected to follow the [Code of Conduct](https://github.com/Unity-Billal-mesloub/bokeh/blob/branch-3.0/docs/CODE_OF_CONDUCT.md).*
 
 ## Follow us
 
